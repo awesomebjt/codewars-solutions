@@ -10,11 +10,14 @@ getTimeAbsSec :: String -> Integer -- Get the time in absolute minutes from the 
 getTimeAbsSec timestr = (60 * (head timeints)) + (last timeints)
      where timeints = Prelude.map (read) $ words [if c == ':' then ' ' else c | c <- timestr]
 
-apptToAbsSecs :: (String, String) -> Set Integer
-apptToAbsSecs (s, e) = fromList [getTimeAbsSec s .. ((getTimeAbsSec e)-1)]
+apptToAbsSecs :: (String, String) -> [Integer]
+apptToAbsSecs (s, e) = [getTimeAbsSec s .. ((getTimeAbsSec e)-1)]
 
-openings :: [[(String, String)]] -> Set Integer
-openings schedules =
+openings :: [[(String, String)]] -> [Integer] -> [Integer]
+openings schedules workday = toList $ difference workday (fromList $ concat (Prelude.map apptToAbsSecs $ concat schedules))
 
-getStartTime :: [[(String, String)]] -> Int -> Maybe String
+findSeries :: [Integer] -> Integer -> Integer
+findSeries (x:y:zs) n =
+
+getStartTime :: [[(String, String)]] -> Integer -> Maybe String
 getStartTime schedules duration =
